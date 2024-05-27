@@ -37,81 +37,88 @@ data_siswa = [
     }
 ]
 
+# Fungsi untuk menampilkan data siswa
+def read_siswa():
+    print("Menampilkan Data Siswa")
+    if not data_siswa:
+        print("Tidak ada data siswa.\n")
+        return
+
+    print("{:<5} | {:<15} | {:<10} | {:<20} | {:<5} | {:<15}".format("NIM", "Nama", "Gender", "Alamat", "Nilai", "Grade"))
+    print("-" * 80)
+    for siswa in data_siswa:
+        grade = calculate_grade(siswa['Nilai'])
+        print("{:<5} | {:<15} | {:<10} | {:<20} | {:<5} | {:<15}".format(siswa['NIM'], siswa['Nama'], siswa['Gender'], siswa['Alamat'], siswa['Nilai'], grade))
+    print()
+
 # Fungsi untuk menambahkan data siswa
 def create_siswa():
     print("Menambahkan Data Siswa")
     nama = input("Nama: ")
     nim = input("NIM: ")
-    gender = input("Gender: ")
+    gender = input("Gender(Pria/Wanita): ")
     alamat = input("Alamat: ")
-    nilai = int(input("Nilai: "))
+    
+    while True:
+        nilai = int(input("Nilai: "))
+        if 0 <= nilai <= 100:
+            break
+        else:
+            print("Nilai harus antara 0 dan 100.")
 
-    if nilai > 100:
-        print("Nilai yg anda Masukkan diLuar Jangkauan\n")
-    elif nilai < 0:
-        print("Tidak menerima Nilai Negatif\n")
-    else:
-        siswa = {
-            "Nama": nama,
-            "NIM": nim,
-            "Gender": gender,
-            "Alamat": alamat,
-            "Nilai": nilai
-        }
-        data_siswa.append(siswa)
-        print("Data siswa berhasil ditambahkan!\n")
-
-# Fungsi untuk menampilkan data siswa
-def read_siswa():
-    print("Menampilkan Data Siswa")
-    if len(data_siswa) == 0:
-        print("Tidak ada data siswa.\n")
-    else:
-        print("{:<5} | {:<15} | {:<10} | {:<20} | {:<5} | {:<15}".format("NIM", "Nama", "Gender", "Alamat", "Nilai", "Grade"))
-        print("-" * 80)
-        for siswa in data_siswa:
-            grade = calculate_grade(siswa['Nilai'])
-            print("{:<5} | {:<15} | {:<10} | {:<20} | {:<5} | {:<15}".format(siswa['NIM'], siswa['Nama'], siswa['Gender'], siswa['Alamat'], siswa['Nilai'], grade))
-        print()
+    data_siswa.append({"Nama": nama, "NIM": nim, "Gender": gender, "Alamat": alamat, "Nilai": nilai})
+    print("Data siswa berhasil ditambahkan!\n")
 
 # Fungsi untuk mengubah data siswa
 def update_siswa():
     print("Mengubah Data Siswa")
-    nim = input("Masukkan NIM siswa yang akan diubah: ")
-    found = False
-    for siswa in data_siswa:
-        if siswa['NIM'] == nim:
-            found = True
-            print(f"Data saat ini - Nama: {siswa['Nama']}, Gender: {siswa['Gender']}, Alamat: {siswa['Alamat']}, Nilai: {siswa['Nilai']}")
-            siswa['Nama'] = input("Nama baru: ")
-            siswa['Gender'] = input("Gender baru: ")
-            siswa['Alamat'] = input("Alamat baru: ")
-            nilai = int(input("Nilai baru: "))
-
-            if nilai > 100:
-                print("Nilai yg anda Masukkan diLuar Jangkauan\n")
-            elif nilai < 0:
-                print("Tidak menerima Nilai Negatif\n")
-            else:
-                siswa['Nilai'] = nilai
-                print("Data siswa berhasil diubah!\n")
+    
+    attempts = 0
+    while attempts < 5:
+        nim = input("Masukkan NIM siswa yang akan diubah: ")
+        siswa = next((s for s in data_siswa if s['NIM'] == nim), None)
+        if siswa:
             break
-    if not found:
-        print("Data siswa tidak ditemukan.\n")
+        else:
+            print("NIM tidak ditemukan, silakan masukkan NIM yang valid.")
+            attempts += 1
+    else:
+        print("Percobaan lebih dari 5 kali. Kembali ke menu utama.\n")
+        return
+    
+    print(f"Data saat ini - Nama: {siswa['Nama']}, Gender: {siswa['Gender']}, Alamat: {siswa['Alamat']}, Nilai: {siswa['Nilai']}")
+    siswa['Nama'] = input("Nama: ")
+    siswa['Gender'] = input("Gender(Pria/Wanita): ")
+    siswa['Alamat'] = input("Alamat: ")
+
+    while True:
+        nilai = int(input("Nilai: "))
+        if 0 <= nilai <= 100:
+            siswa['Nilai'] = nilai
+            break
+        else:
+            print("Nilai harus antara 0 dan 100.")
+
+    print("Data siswa berhasil diubah!\n")
 
 # Fungsi untuk menghapus data siswa
 def delete_siswa():
     print("Menghapus Data Siswa")
-    nim = input("Masukkan NIM siswa yang akan dihapus: ")
-    found = False
-    for siswa in data_siswa:
-        if siswa['NIM'] == nim:
-            found = True
+    
+    attempts = 0
+    while attempts < 5:
+        nim = input("Masukkan NIM siswa yang akan dihapus: ")
+        siswa = next((s for s in data_siswa if s['NIM'] == nim), None)
+        if siswa:
             data_siswa.remove(siswa)
             print("Data siswa berhasil dihapus!\n")
-            break
-    if not found:
-        print("Data siswa tidak ditemukan.\n")
+            return
+        else:
+            print("NIM tidak ditemukan, silakan masukkan NIM yang valid.")
+            attempts += 1
+    else:
+        print("Percobaan lebih dari 5 kali. Kembali ke menu utama.\n")
+
 
 # Fungsi untuk menghitung grade
 def calculate_grade(nilai):
@@ -135,27 +142,27 @@ def calculate_grade(nilai):
 # Menu utama
 def main_menu():
     while True:
-        PilihanMenu = input('''
+        pilihan_menu = input('''
 Selamat Datang di Aplikasi Data Nilai Siswa SMAN 5 Bandung
         
 Main Menu :
-1. Menambahkan Data Siswa
-2. Menampilkan Data Siswa
+1. Menampilkan Data Siswa
+2. Menambahkan Data Siswa
 3. Mengubah Data Siswa
 4. Menghapus Data Siswa
 5. Keluar Aplikasi
         
-Masukan angka Menu yang akan dipilih : ''')
+Masukkan angka Menu yang akan dipilih: ''')
 
-        if PilihanMenu == "1":
-            create_siswa()
-        elif PilihanMenu == "2":
+        if pilihan_menu == "1":
             read_siswa()
-        elif PilihanMenu == "3":
+        elif pilihan_menu == "2":
+            create_siswa()
+        elif pilihan_menu == "3":
             update_siswa()
-        elif PilihanMenu == "4":
+        elif pilihan_menu == "4":
             delete_siswa()
-        elif PilihanMenu == "5":
+        elif pilihan_menu == "5":
             print("Terima kasih telah menggunakan aplikasi ini.")
             break
         else:
