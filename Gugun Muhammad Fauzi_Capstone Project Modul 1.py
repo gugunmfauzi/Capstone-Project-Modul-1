@@ -143,7 +143,7 @@ Main Menu :
 2. Menampilkan Data Siswa
 3. Mengubah Data Siswa
 4. Menghapus Data Siswa
-5. Keluar dari program
+5. Keluar Aplikasi
         
 Masukan angka Menu yang akan dipilih : ''')
 
@@ -156,7 +156,7 @@ Masukan angka Menu yang akan dipilih : ''')
         elif PilihanMenu == "4":
             delete_siswa()
         elif PilihanMenu == "5":
-            print("Keluar dari program.")
+            print("Terima kasih telah menggunakan aplikasi ini.")
             break
         else:
             print("Pilihan tidak valid. Silakan coba lagi.\n")
