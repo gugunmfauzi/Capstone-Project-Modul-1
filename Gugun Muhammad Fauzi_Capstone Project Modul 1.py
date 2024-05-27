@@ -136,7 +136,7 @@ def calculate_grade(nilai):
 def main_menu():
     while True:
         PilihanMenu = input('''
-Selamat Datang di Aplikasi Data Siswa SMAN 5 Bandung
+Selamat Datang di Aplikasi Data Nilai Siswa SMAN 5 Bandung
         
 Main Menu :
 1. Menambahkan Data Siswa
